@@ -1,4 +1,15 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+
 public class Listener extends  ExprBaseListener{
+    Stack<ArrayList<Node>> nodes = new Stack<>();
+
+    public Stack<ArrayList<Node>> getNodes() {
+        return nodes;
+    }
+
     @Override
     public void exitGroup(ExprParser.GroupContext ctx) {
         System.out.println("Grupo de los elementos");
@@ -20,13 +31,70 @@ public class Listener extends  ExprBaseListener{
 
     @Override
     public void exitChara(ExprParser.CharaContext ctx) {
-        System.out.println("Chara character");
-        System.out.println(ctx.getText());
+        HashMap<Character, List<Integer>> hm = new HashMap<>();
+        List<Integer> destiny = new ArrayList<>();
+        destiny.add(1);
+        hm.put(ctx.getText().charAt(0), destiny);
+        Node n = new Node(0, hm);
+        Node d = new Node(1, new HashMap<>());
+        ArrayList<Node> newList = new ArrayList<>();
+        newList.add(n);
+        newList.add(d);
+        nodes.push(newList);
     }
 
     @Override
     public void exitUnion(ExprParser.UnionContext ctx) {
-        System.out.println("Union character");
-        System.out.println(ctx.getText());
+        ArrayList<Node> block = new ArrayList<>();
+        ArrayList<Node> rightUnion = nodes.pop();
+        ArrayList<Node> leftUnion = nodes.pop();
+
+        HashMap<Character, List<Integer>> hm = new HashMap<>();
+        List<Integer> l = new ArrayList<>();
+        l.add(leftUnion.get(0).getIdentifier()+1);
+        l.add(leftUnion.size()+1);
+        hm.put('ñ', l);
+        Node start = new Node(0, hm);
+
+        block.add(start);
+
+        for(Node n : leftUnion){
+            n.setIdentifier(n.getIdentifier() + 1);
+            Character[] ar = n.getPaths().keySet().toArray(new Character[0]);
+            for(Character c : ar){
+                List<Integer> newList = new ArrayList<>();
+                for(Integer i : n.getPaths().get(c)){
+                    newList.add(i + 1);
+                }
+                n.getPaths().put(c, newList);
+            }
+            block.add(n);
+        }
+
+
+        for(Node n : rightUnion){
+            int id = n.getIdentifier() + leftUnion.size() + 1;
+            n.setIdentifier(id);
+            Character[] ar = n.getPaths().keySet().toArray(new Character[0]);
+            for(Character c : ar){
+                List<Integer> newList = new ArrayList<>();
+                for(Integer i : n.getPaths().get(c)){
+                    newList.add(i + leftUnion.size() + 1);
+                }
+                n.getPaths().put(c, newList);
+            }
+            block.add(n);
+        }
+        int lastNodeId = leftUnion.size() + rightUnion.size() + 1;
+        List<Integer> lastDirection = new ArrayList<>();
+        lastDirection.add(lastNodeId);
+
+        block.get(leftUnion.size()).getPaths().put('ñ', lastDirection);
+        block.get(leftUnion.size() + rightUnion.size()).getPaths().put('ñ', lastDirection);
+
+        Node last = new Node(lastNodeId, new HashMap<>());
+        block.add(last);
+
+        nodes.push(block);
     }
 }
