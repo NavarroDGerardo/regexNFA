@@ -3,17 +3,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
 
 public class NFA extends TablaTransicion{
-
-    private HashMap<Character, HashMap<Character, List<Integer>>> states = new HashMap<>();
-    private Set<Character> alphabet = new HashSet<Character>();
-    private Set<Integer> sts = new HashSet<>();
-
-    public void McNaughtonYamadaThomson(ParseTree tree){
-        while (tree.getChildCount() != 0){
-            tree = tree.getChild(0);
-            System.out.println(tree.toString());
-        }
-    }
+    //TODO
+    private HashMap<Integer, HashMap<Character, List<Integer>>> states = new HashMap<>();// identifier { process { identifier (otro estado) } }
+    private Set<Character> alphabet = new HashSet<Character>(); //chara
+    private Set<Integer> sts = new HashSet<>(); //identifiers
 
     public Set<Integer> get(int state, char c){
         return sts;

@@ -18,6 +18,7 @@ public class Main {
             parseWalker.walk(listener, tree);
 
             ArrayList<Node> list = listener.getNodes().pop();
+            //Node.createNFA()
             for (Node n : list)
                 System.out.println(n);
 
@@ -25,4 +26,7 @@ public class Main {
             System.out.println("Error");
         }
     }
+
+    //TODO crearNFA()
+
 }
