@@ -25,8 +25,39 @@ public class Listener extends  ExprBaseListener{
 
     @Override
     public void exitStar(ExprParser.StarContext ctx) {
-        System.out.println("Star elements");
-        System.out.println(ctx.getText());
+        ArrayList<Node> block = new ArrayList<>();
+        ArrayList<Node> nodeList = nodes.pop();
+
+        int lastIdNode = nodeList.size() + 1;
+
+        HashMap<Character, List<Integer>> startHashmap = new HashMap<>();
+        List<Integer> listStart = new ArrayList<>();
+        listStart.add(1);
+        listStart.add(lastIdNode);
+        startHashmap.put('ñ', listStart);
+        Node start = new Node(0, startHashmap);
+        block.add(start);
+
+        for(Node n : nodeList){
+            n.setIdentifier(n.getIdentifier() + 1);
+            Character[] ar = n.getPaths().keySet().toArray(new Character[0]);
+            for(Character c : ar){
+                List<Integer> newList = new ArrayList<>();
+                for(Integer i : n.getPaths().get(c)){
+                    newList.add(i + 1);
+                }
+                n.getPaths().put(c, newList);
+            }
+            block.add(n);
+        }
+        List<Integer> directionNode = new ArrayList<>();
+        directionNode.add(nodeList.get(0).getIdentifier());
+        directionNode.add(lastIdNode);
+        block.get(block.size() - 1).getPaths().put('ñ', directionNode);
+
+        Node last = new Node(nodeList.size() + 1, new HashMap<>());
+        block.add(last);
+        nodes.push(block);
     }
 
     @Override
