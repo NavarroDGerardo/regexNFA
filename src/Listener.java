@@ -18,9 +18,26 @@ public class Listener extends  ExprBaseListener{
 
     @Override
     public void exitConcatenation(ExprParser.ConcatenationContext ctx) {
-        System.out.println("concatenation de los elementos");
-        System.out.println(ctx.getChild(0).getText());
-        System.out.println(ctx.getChild(1).getText());
+        ArrayList<Node> right = nodes.pop();
+        ArrayList<Node> left = nodes.pop();
+        int leftSize = left.size();
+        left.remove(left.size() - 1);
+
+        for(Node n : right){
+            int id = n.getIdentifier() + leftSize - 1;
+            n.setIdentifier(id);
+            Character[] ar = n.getPaths().keySet().toArray(new Character[0]);
+            for(Character c : ar){
+                List<Integer> newList = new ArrayList<>();
+                for(Integer i : n.getPaths().get(c)){
+                    newList.add(i + leftSize - 1);
+                }
+                n.getPaths().put(c, newList);
+            }
+            left.add(n);
+        }
+
+        nodes.add(left);
     }
 
     @Override

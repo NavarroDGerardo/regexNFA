@@ -18,6 +18,6 @@ set_items: set_item | set_item set_items;
 set_item: range | chara;
 range: chara '-' chara;
 
-NONMETA : [A-Za-z] ;
+NONMETA : [A-Za-z];
 META: '.' | '*' | '+' | '?' | '^' | '$' | '(' | ')' | '[' | ']';
 NEWLINE:    '\r'? '\n';
