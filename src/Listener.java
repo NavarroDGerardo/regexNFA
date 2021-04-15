@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class Listener extends  ExprBaseListener{
-    //TODO hacer mas pruebas
     Stack<ArrayList<Node>> nodes = new Stack<>();
-    //TODO crear instancia NFA
+    NFA nfa = new NFA();
 
     public Stack<ArrayList<Node>> getNodes() {
         return nodes;
@@ -81,11 +80,12 @@ public class Listener extends  ExprBaseListener{
 
     @Override
     public void exitChara(ExprParser.CharaContext ctx) {
+        Character c = ctx.getText().charAt(0);
+        nfa.getAlphabet().add(c);
         HashMap<Character, List<Integer>> hm = new HashMap<>();
         List<Integer> destiny = new ArrayList<>();
         destiny.add(1);
-        hm.put(ctx.getText().charAt(0), destiny);
-        //TODO agregar los chara al alphabet en el NFA
+        hm.put(c, destiny);
         Node n = new Node(0, hm);
         Node d = new Node(1, new HashMap<>());
         ArrayList<Node> newList = new ArrayList<>();
@@ -147,5 +147,9 @@ public class Listener extends  ExprBaseListener{
         block.add(last);
 
         nodes.push(block);
+    }
+
+    public NFA getNfa() {
+        return nfa;
     }
 }

@@ -20,7 +20,12 @@ public abstract class TablaTransicion {
         for(int i = 0; i < states; i++) {
             ps.printf("%-20d", i);
             for(Character c: alphabet) {
-                ps.printf("%20s", get(i, c).toString());
+                if(get(i, c) != null){
+                    ps.printf("%20s", get(i, c).toString());
+                }else {
+                    Set<Integer> setvacio = new HashSet<>();
+                    ps.printf("%20s", setvacio.toString());
+                }
             }
             ps.println();
         }
