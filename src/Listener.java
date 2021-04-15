@@ -12,9 +12,35 @@ public class Listener extends  ExprBaseListener{
     }
 
     @Override
-    public void exitGroup(ExprParser.GroupContext ctx) {
-        System.out.println("Grupo de los elementos");
-        System.out.println(ctx.getText());
+    public void exitPlus(ExprParser.PlusContext ctx) {
+        ArrayList<Node> last = nodes.pop();
+        List<Integer> path = new ArrayList<>();
+        path.add(last.get(0).getIdentifier());
+        last.get(last.size() - 1).getPaths().put('ñ', path);
+        nodes.push(last);
+    }
+
+    @Override
+    public void exitRange(ExprParser.RangeContext ctx) {
+        ArrayList<Node> right = nodes.pop();
+        ArrayList<Node> left = nodes.pop();
+
+        int leftRange = left.get(0).getPaths().keySet().toArray(new Character[0])[0] + 0;
+        int rightRange = right.get(0).getPaths().keySet().toArray(new Character[0])[0] + 0;
+        HashMap<Character, List<Integer>> paths = new HashMap<>();
+        List<Integer> lst = new ArrayList<>();
+        lst.add(1);
+
+        while (leftRange <= rightRange){
+            nfa.getAlphabet().add((char)leftRange);
+            paths.put((char)leftRange++, lst);
+        }
+
+        Node start = new Node(0, paths);
+        ArrayList<Node> lstNodes = new ArrayList<>();
+        lstNodes.add(start);
+        lstNodes.add(new Node(1, new HashMap<>()));
+        nodes.push(lstNodes);
     }
 
     @Override
